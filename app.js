@@ -1,16 +1,43 @@
 const express = require('express')
 const app = express()
 const handlebars = require('express-handlebars').engine
+const bodyParser = require('body-parser')
+const post = require('./models/post')
 
 app.engine('handlebars', handlebars({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.get('/', function(req, res){
     res.render('index')
 })
 
 app.get('/consultar', function(req, res){
-    res.render('consultar')
+    post.findAll().then((result) => {
+        res.render('consultar', { agendamentos: result });
+    }).catch((err) => {
+        console.log('Erro ao consultar agendamentos:', err);
+        res.status(500).send('Erro ao consultar agendamentos');
+    });
+});
+
+
+app.post('/cadastrar', function(req, res){
+    post.create({
+        nome: req.body.nome,
+        telefone: req.body.telefone,
+        origem: req.body.origem,
+        data_contato: req.body.data_contato,
+        observacoes: req.body.observacoes
+    }).then((result) => {
+        console.log('Agendamento cadastrado com sucesso')
+    }).catch((err) => {
+        console.log('Erro ao cadastrar agendamento')
+    });
+
+    res.redirect('/')
 })
 
 app.get('/atualizar', function(req, res){

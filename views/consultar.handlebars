@@ -30,16 +30,25 @@
                     <th scope="col">Origem</th>
                     <th scope="col">Data de Contato</th>
                     <th scope="col">Observações</th>
+                    <th scope="col">Ações</th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <th>teste</th>
-                    <td>teste</td>
-                    <td>teste</td>
-                    <td>teste</td>
-                    <td>teste</td>
-                </tr>
+                {{#each agendamentos}}
+                    {{#dataValues}}
+                    <tr>
+                        <td>{{this.nome}}</td>
+                        <td>{{this.telefone}}</td>
+                        <td>{{this.origem}}</td>
+                        <td>{{this.data_contato}}</td>
+                        <td>{{this.observacoes}}</td>
+                        <td>
+                            <a href="/editar/{{this.id}}" class="btn btn-warning">Editar</a>
+                            <a href="/excluir/{{this.id}}" class="btn btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {{/dataValues}}
+                {{/each}}
             </tbody>
         </table>
     </div>
