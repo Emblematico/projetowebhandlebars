@@ -40,8 +40,49 @@ app.post('/cadastrar', function(req, res){
     res.redirect('/')
 })
 
-app.get('/atualizar', function(req, res){
-    res.render('atualizar')
+app.get('/atualizar/:id', function(req, res){
+    const id = req.params.id;
+    post.findByPk(id).then((result) => {
+        const agendamento = result.dataValues;
+        res.render('atualizar', { agendamento: agendamento });
+    }).catch((err) => {
+        console.log('Erro ao consultar agendamentos:', err);
+        res.status(500).send('Erro ao consultar agendamentos');
+    });
+});
+
+app.post('/editar/:id', function(req, res){
+    post.update({
+        nome: req.body.nome,
+        telefone: req.body.telefone,
+        origem: req.body.origem,
+        data_contato: req.body.data_contato,
+        observacoes: req.body.observacoes
+    }, {
+        where: {
+            id: req.params.id
+        }
+    }).then((result) => {
+        console.log('Agendamento atualizado com sucesso')
+    }).catch((err) => {
+        console.log('Erro ao atualizar agendamento')
+    });
+
+    res.redirect('/consultar')
+})
+
+app.get('/deletar/:id', function(req, res){
+    post.destroy({
+        where: {
+            id: req.params.id
+        }
+    }).then((result) => {
+        console.log('Agendamento deletado com sucesso')
+    }).catch((err) => {
+        console.log('Erro ao deletar agendamento')
+    });
+
+    res.redirect('/consultar')
 })
 
 app.listen(3000, function(){
